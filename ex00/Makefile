@@ -2,7 +2,7 @@
 .PHONY:	all init clean fclean re test FORCE
 
 include config.mk
-include bigcoin_exchange.mk
+include bitcoin_exchange.mk
 
 OBJS := $(patsubst $(SRCSDIR)%.cpp, $(OBJS_DIR)%.o, $(SRCS))
 DEPS := $(OBJS:.o=.d)
@@ -23,7 +23,7 @@ $(NAME): Makefile $(OBJS) | $(EXEC_DIR)
 	echo "$(RESET)"
 
 
-$(OBJS_DIR)%.o: $(SRCSDIR)%.cpp Makefile config.mk bigcoin_exchange.mk | $(OBJS_DIR)
+$(OBJS_DIR)%.o: $(SRCSDIR)%.cpp Makefile config.mk bitcoin_exchange.mk | $(OBJS_DIR)
 	mkdir -p $(dir $@)
 	echo "$(PURPLE)Compiling $<...$(RESET)"
 	$(CXX) $(CXXFLAGS) -c -o $@ $<	

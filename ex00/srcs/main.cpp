@@ -21,3 +21,22 @@
 //   2.6) x = x + 1 until we reach the EOF of our input.txt
 //
 // 3) cleanup part close / free wathever need to be closed/free then end of program.
+
+//https://codesignal.com/learn/courses/fundamentals-of-text-data-manipulation-in-cpp/lessons/reading-text-files-in-cpp
+#include <fstream>
+#include <iostream>
+
+//1) 
+int main (int argc, char *argv[]){
+    if(argc != 2){
+        std::cout<<"Error: no file provided."<<std::endl;
+        return(1);
+    }
+
+    
+
+    std::string file_path = argv[1]; //save our argv[1] in a string format
+    // std::ifstream file(file_path);
+    std::cout<<"so far it work"<<std::endl; //TORM
+    return(0);
+}
