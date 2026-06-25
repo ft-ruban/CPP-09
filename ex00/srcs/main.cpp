@@ -1,6 +1,5 @@
-// TODO: use at least ONE container in the code to make it valid 
-//          SO FIND THE ONES THAT WOULD BE IDEAL HERE
-// TODO: gather knowledge about how to treat the .csv
+// TODO: map seem to be the way here
+// TODO: gather knowledge about how to treat the .csv (prbly like a regular file)
 
 
 // 1) take file as an argument and open it.
@@ -25,18 +24,30 @@
 //https://codesignal.com/learn/courses/fundamentals-of-text-data-manipulation-in-cpp/lessons/reading-text-files-in-cpp
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
-//1) 
-int main (int argc, char *argv[]){
+
+int file_opener(int argc, char *argv[], std::ostringstream& content){
     if(argc != 2){
-        std::cout<<"Error: no file provided."<<std::endl;
+        std::cout<<"Error: no path provided."<<std::endl;
         return(1);
     }
+    std::string file_path = argv[1];
+    std::ifstream file(file_path.c_str());
 
-    
-
-    std::string file_path = argv[1]; //save our argv[1] in a string format
-    // std::ifstream file(file_path);
-    std::cout<<"so far it work"<<std::endl; //TORM
+    if(!file.is_open()){
+        std::cout<<"Error: Failed to open file: " << file_path << "\n";
+        return(1);
+    }
+    content << file.rdbuf();
+    return(0);
+}
+//2009-01-02,0
+int main (int argc, char *argv[]){
+    std::ostringstream content;
+    if(file_opener(argc, argv, content)){
+        return(1);
+    }
+    std::cout<<"full file content:\n" <<content.str()<<std::endl;
     return(0);
 }
