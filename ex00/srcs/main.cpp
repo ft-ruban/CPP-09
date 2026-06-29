@@ -1,12 +1,8 @@
-// TODO: map seem to be the way here
-// TODO: gather knowledge about how to treat the .csv (prbly like a regular file)
-
-
 // 1) take file as an argument and open it.
 //   1.1) if no file send error "Error: no file provided."
 //   1.2) if file could not be opened send "Error: Could not open file."
 //
-// 2) treat line x (x being the iteration, starting at 1 as line 1 until 
+// 2) (obsolete) treat line x (x being the iteration, starting at 1 as line 1 until 
 //    we reach end of input.txt)
 //   2.1) line must use the format "date | value" else : "Error: bad date format"
 //   2.2) line must be a valid date format: "Year-Month-Day" else : "Error: bad input => 
@@ -22,32 +18,23 @@
 // 3) cleanup part close / free wathever need to be closed/free then end of program.
 
 //https://codesignal.com/learn/courses/fundamentals-of-text-data-manipulation-in-cpp/lessons/reading-text-files-in-cpp
+//en.cppreference.com/cpp/error/exception
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include "../includes/BitcoinExchange.hpp"
 
-
-int file_opener(int argc, char *argv[], std::ostringstream& content){
-    if(argc != 2){
-        std::cout<<"Error: no path provided."<<std::endl;
-        return(1);
-    }
-    std::string file_path = argv[1];
-    std::ifstream file(file_path.c_str());
-
-    if(!file.is_open()){
-        std::cout<<"Error: Failed to open file: " << file_path << "\n";
-        return(1);
-    }
-    content << file.rdbuf();
-    return(0);
-}
 //2009-01-02,0
 int main (int argc, char *argv[]){
-    std::ostringstream content;
-    if(file_opener(argc, argv, content)){
-        return(1);
+    BitcoinExchange foo;
+    try{
+            foo.FileOpener(argc, argv);
+            //TODO: start filldata (shall review our steps too)
+
+    }   catch(const std::exception & e){
+            std::cout<<"Error: BitcoinOpener: "<<e.what()<<std::endl;
+            return(1);
     }
-    std::cout<<"full file content:\n" <<content.str()<<std::endl;
+    std::cout<<"full file content:\n" <<foo.GetContent()<<std::endl;
     return(0);
 }
