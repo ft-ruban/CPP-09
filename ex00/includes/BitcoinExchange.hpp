@@ -2,6 +2,8 @@
 #include <map>
 #include <sstream>
 #include <fstream>
+#include <cstdlib>
+#include <iomanip> //precision stdout
 
 class BitcoinException : public std::runtime_error{
     public:
@@ -30,7 +32,7 @@ class BitcoinExchange{
         std::string GetData() const; 
 
     private:
-        std::map<std::string, int> data_;
+        std::map<std::string, float> data_;
         std::ostringstream content_;
 
 };
