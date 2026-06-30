@@ -19,10 +19,10 @@ BitcoinExchange::~BitcoinExchange(){
 }
 
 void BitcoinExchange::FillData(){
-    std::string file_path = "./data.csv";
+    std::string file_path = "./datad.csv";
     std::ifstream file(file_path.c_str());
     if(!file.is_open())
-        throw BitcoinException("Couldn't open our .csv file, make sure \'"+ file_path +"\' does exist.");
+        throw BitcoinException::FillDataError("Couldn't open our .csv file, make sure \'"+ file_path +"\' does exist.");
     // for(std::map<std::string, int>::const_iterator it = data_.begin();
     // it != data_.end(); ++it)
     //     foo << it->first << "\n";

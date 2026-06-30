@@ -33,7 +33,7 @@ int main (int argc, char *argv[]){
             foo.FillData();
 
     }   catch(const std::exception & e){
-            std::cout<<"Error: BitcoinExchange: "<<e.what()<<std::endl;
+            std::cout<<"Error: "<<e.what()<<std::endl;
             return(1);
     }
     std::cout<<"full file content:\n" <<foo.GetContent()<<std::endl;

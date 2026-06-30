@@ -5,8 +5,12 @@
 
 class BitcoinException : public std::runtime_error{
     public:
-        BitcoinException(const std::string& msg)
-            : std::runtime_error("FillData: " + msg){}
+        explicit BitcoinException(const std::string& msg)
+            : std::runtime_error("BitcoinException: " + msg){}
+        
+        static BitcoinException FillDataError(const std::string& details){
+            return BitcoinException("FillDataError: " + details);
+        }
 };
 
 class BitcoinExchange{
