@@ -13,7 +13,7 @@ class BitcoinExchange{
         void FillData();
         void FileOpener(int argc, char *argv[]);
         std::string GetContent();
-        std::map<std::string, int> GetData_(); 
+        std::string GetData(); 
 
     private:
         std::map<std::string, int> data_;

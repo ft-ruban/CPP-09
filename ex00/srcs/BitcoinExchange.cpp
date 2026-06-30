@@ -36,3 +36,16 @@ void BitcoinExchange::FileOpener(int argc, char *argv[]){
 std::string BitcoinExchange::GetContent(){
     return(content_.str());
 }
+
+//still have to test it.
+std::string BitcoinExchange::GetData(){
+    std::ostringstream foo;
+    std::string return_value;
+for(std::map<std::string, int>::const_iterator it = data_.begin();
+    it != data_.end(); ++it)
+{
+    foo << it->first << "\n";
+}
+    return_value = foo.str();
+    return(return_value);
+}
