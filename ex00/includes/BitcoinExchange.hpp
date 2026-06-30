@@ -3,6 +3,12 @@
 #include <sstream>
 #include <fstream>
 
+class BitcoinException : public std::runtime_error{
+    public:
+        BitcoinException(const std::string& msg)
+            : std::runtime_error("FillData: " + msg){}
+};
+
 class BitcoinExchange{
     public:
         BitcoinExchange();
@@ -11,9 +17,9 @@ class BitcoinExchange{
         ~BitcoinExchange();
 
         void FillData();
-        void FileOpener(int argc, char *argv[]);
-        std::string GetContent();
-        std::string GetData(); 
+        void FileOpener(int& argc, char* path_argv);
+        const std::string GetContent();
+        const std::string GetData(); 
 
     private:
         std::map<std::string, int> data_;
