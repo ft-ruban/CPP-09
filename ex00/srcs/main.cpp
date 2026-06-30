@@ -27,16 +27,25 @@
 
 //2009-01-02,0
 int main (int argc, char *argv[]){
-    BitcoinExchange foo;
     try{
-            foo.FileOpener(argc, argv[1]);
-            foo.FillData();
-
+        if(argc != 2)
+            throw std::invalid_argument("no path provided at launch.");
+    } catch(const std::exception & e){
+        std::cout<<"Error: "<<e.what()<<std::endl;
+        return(1);
+    }
+    BitcoinExchange foo(argv[1], "./data.csv");
+    try{
+            foo.FileOpener();
+            foo.TransferFilesContents();
+            //foo.convert();
     }   catch(const std::exception & e){
             std::cout<<"Error: "<<e.what()<<std::endl;
             return(1);
     }
-    std::cout<<"full file content:\n" <<foo.GetContent()<<std::endl;
+
+    
+    std::cout<<"full file content:\n" <<foo.GetInput()<<std::endl;
     std::cout<<"full data content:\n" <<foo.GetData()<<std::endl;
     return(0);
 }

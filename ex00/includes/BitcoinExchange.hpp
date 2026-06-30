@@ -22,17 +22,24 @@ class BitcoinException : public std::runtime_error{
 class BitcoinExchange{
     public:
         BitcoinExchange();
+        BitcoinExchange(std::string provided_path_txt, std::string provided_path_csv);
         BitcoinExchange(BitcoinExchange& other);
         BitcoinExchange& operator=(const BitcoinExchange& other);
         ~BitcoinExchange();
 
-        void FillData();
-        void FileOpener(int& argc, char* path_argv);
-        const std::string GetContent();
+        void TransferFilesContents();
+        void FileOpener();
+        void Convertor();
+        
+        const std::string GetInput();
         std::string GetData() const; 
 
     private:
         std::map<std::string, float> data_;
-        std::ostringstream content_;
+        std::ostringstream input_;
+        std::string path_txt_;
+        std::string path_csv_;
+        std::ifstream textfile_;
+        std::ifstream csvfile_;
 
 };

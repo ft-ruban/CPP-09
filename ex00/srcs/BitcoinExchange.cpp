@@ -4,6 +4,11 @@ BitcoinExchange::BitcoinExchange(){
 
 }
 
+BitcoinExchange::BitcoinExchange(std::string provided_path_txt, std::string provided_path_csv){
+    path_txt_ = provided_path_txt;
+    path_csv_ = provided_path_csv;
+}
+
 BitcoinExchange::BitcoinExchange(BitcoinExchange& other){
     this->data_ = other.data_;
     // TODO : this->content_ = other.content_;
@@ -20,38 +25,40 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other){
 BitcoinExchange::~BitcoinExchange(){
 }
 
-void BitcoinExchange::FillData(){
+void BitcoinExchange::TransferFilesContents(){
     std::string line;
-    std::string file_path = "./data.csv";
-    std::ifstream file(file_path.c_str());
-    
-    if(!file.is_open())
-        throw BitcoinException::FillDataError("Couldn't open our .csv file, make sure \'"+ file_path +"\' does exist.");
-    std::getline(file, line);
+    std::size_t pos;
+    std::string date;
+    std::string rate;
+
+    input_ << textfile_.rdbuf();
+    std::getline(csvfile_, line);
     if(line != "date,exchange_rate")
         throw BitcoinException::invalid_csv("Invalid .csv's first line.");
-
-    while(std::getline(file, line)){
-        std::size_t pos = line.find(',');
-        std::string date = line.substr(0,pos);
-        std::string rate = line.substr(pos + 1);
-
+    while(std::getline(csvfile_, line)){
+        pos = line.find(',');
+        date = line.substr(0,pos);
+        rate = line.substr(pos + 1);
         data_.insert(std::make_pair(date, std::atof(rate.c_str())));
     }
 }
 
-void BitcoinExchange::FileOpener(int& argc, char* path_argv){
-    if(argc != 2)
-        throw std::invalid_argument( "No path provided at launch.");
-    std::string file_path = path_argv;
-    std::ifstream file(file_path.c_str());
-    if(!file.is_open())
-        throw std::invalid_argument("Failed to open file \'" + file_path + "\'");
-    content_ << file.rdbuf();
+void BitcoinExchange::FileOpener(){
+
+    textfile_.open(path_txt_.c_str());
+    if(!textfile_.is_open())
+        throw std::invalid_argument("Failed to open file \'" + path_txt_ + "\'");
+    csvfile_.open(path_csv_.c_str());
+    if(!csvfile_.is_open())
+        throw std::invalid_argument("failed to open .csv file \'" + path_csv_ + "\'");
 }
 
-const std::string BitcoinExchange::GetContent(){
-    return(content_.str());
+void Convertor(){
+    
+}
+
+const std::string BitcoinExchange::GetInput(){
+    return(input_.str());
 }
 
 //still have to test it.
