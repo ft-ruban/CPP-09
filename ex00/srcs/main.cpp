@@ -38,14 +38,14 @@ int main (int argc, char *argv[]){
     try{
             foo.FileOpener();
             foo.TransferFilesContents();
-            //foo.convert();
+            foo.Convertor();
     }   catch(const std::exception & e){
             std::cout<<"Error: "<<e.what()<<std::endl;
             return(1);
     }
 
-    
-    std::cout<<"full file content:\n" <<foo.GetInput()<<std::endl;
-    std::cout<<"full data content:\n" <<foo.GetData()<<std::endl;
+
+    // std::cout<<"full file content:\n" <<foo.GetInput()<<std::endl;
+    // std::cout<<"full data content:\n" <<foo.GetData()<<std::endl;
     return(0);
 }

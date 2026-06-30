@@ -31,7 +31,7 @@ void BitcoinExchange::TransferFilesContents(){
     std::string date;
     std::string rate;
 
-    input_ << textfile_.rdbuf();
+    // input_ << textfile_.rdbuf();
     std::getline(csvfile_, line);
     if(line != "date,exchange_rate")
         throw BitcoinException::invalid_csv("Invalid .csv's first line.");
@@ -53,10 +53,40 @@ void BitcoinExchange::FileOpener(){
         throw std::invalid_argument("failed to open .csv file \'" + path_csv_ + "\'");
 }
 
-void Convertor(){
-    
-}
+void BitcoinExchange::Convertor(){
+    //data_ hold .csv
+    //input_
+    std::string line = input_.str();
+    std::size_t pos;
+    std::string date;
+    std::string value;
 
+    std::getline(textfile_, line);
+    // std::cout<<"line = "<< line<<std::endl;
+    if(line != "date | value")
+        throw BitcoinException::invalid_csv("Invalid .txt's first line"); //todo change error type here
+    while(std::getline(textfile_, line)){
+        pos = line.find('|');
+        //TODO if missing '|' bad input direct "Error: bad input => line"
+
+        date = line.substr(0, pos + 1);
+        //date_checker function check 4 first letters it's an error if 
+        // !yyyy-mm-dd
+        // if yyyy < 2009, mm > 12 || 00, dd need to find how to deal with it ASAP.
+
+        value = line.substr(pos + 2);
+        //check_value if it is negative send error, if too large same
+
+
+        std::cout<<"TEST DATE = "<<date<<" VALUE = "<<value<<std::endl;
+        
+        //if it pass I need to find the closet date that was sent
+
+        //once date is found multiply value by associated exchange rate
+    }  
+
+
+}
 const std::string BitcoinExchange::GetInput(){
     return(input_.str());
 }
