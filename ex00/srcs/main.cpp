@@ -37,5 +37,6 @@ int main (int argc, char *argv[]){
             return(1);
     }
     std::cout<<"full file content:\n" <<foo.GetContent()<<std::endl;
+    std::cout<<"full data content:\n" <<foo.GetData()<<std::endl;
     return(0);
 }

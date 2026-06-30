@@ -11,6 +11,10 @@ class BitcoinException : public std::runtime_error{
         static BitcoinException FillDataError(const std::string& details){
             return BitcoinException("FillDataError: " + details);
         }
+
+        static BitcoinException invalid_csv(const std::string& details){
+            return BitcoinException("FillDataError: " + details);
+        }
 };
 
 class BitcoinExchange{
@@ -23,7 +27,7 @@ class BitcoinExchange{
         void FillData();
         void FileOpener(int& argc, char* path_argv);
         const std::string GetContent();
-        const std::string GetData(); 
+        std::string GetData() const; 
 
     private:
         std::map<std::string, int> data_;

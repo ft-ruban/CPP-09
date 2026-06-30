@@ -19,13 +19,23 @@ BitcoinExchange::~BitcoinExchange(){
 }
 
 void BitcoinExchange::FillData(){
-    std::string file_path = "./datad.csv";
+    std::string file_path = "./data.csv";
     std::ifstream file(file_path.c_str());
     if(!file.is_open())
         throw BitcoinException::FillDataError("Couldn't open our .csv file, make sure \'"+ file_path +"\' does exist.");
-    // for(std::map<std::string, int>::const_iterator it = data_.begin();
+    std::string line;
+    std::getline(file, line);
+    if(line != "date,exchange_rate")
+        throw BitcoinException::invalid_csv("Invalid .csv's first line.");
+    while(std::getline(file, line)){
+
+        std::cout<<line<<'\n';
+    }
+    
+    //     for(std::map<std::string, int>::iterator it = data_.begin();
     // it != data_.end(); ++it)
-    //     foo << it->first << "\n";
+    //     data_.insert(it, std::pair<std::string,int>("b", 300));
+        // std::map<std::string, int> data_;
     //while loop until csv file at EOF
         //for each lines we data_.insert(std::make_pair"date", num);
 }
@@ -45,7 +55,7 @@ const std::string BitcoinExchange::GetContent(){
 }
 
 //still have to test it.
-const std::string BitcoinExchange::GetData(){
+std::string BitcoinExchange::GetData() const{
     std::ostringstream foo;
     std::string return_value;
 
