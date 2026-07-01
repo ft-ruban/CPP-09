@@ -117,6 +117,7 @@ void BitcoinExchange::Convertor(){
     std::size_t pos;
     std::string date;
     std::string value;
+    int converted_value;
 
     std::getline(textfile_, line);
     if(line != "date | value")
@@ -134,8 +135,19 @@ void BitcoinExchange::Convertor(){
         }
         else{
             std::cout<<"date_checker success!!! date : "<<date<<std::endl; //TODL
+            value = line.substr(pos + 2);
+            //check if first char = '-'
+                //send appropriate error if - "Error: not a positive number."
+            //TEST: if you find a "." then it is a float, if float then cut in two parts and we will add them later?
+            //then check if isNumber()
+                //send appropriate error if <not_number> "Error: Not a num value" (may want to check if .?)
+            //then atof()
+                //if > than 1000 then "Error: too large a number." (note: check if size > 5)
+            std::cout<<"value = "<<value<<std::endl;
+            converted_value = std::atof(value.c_str());
+            std::cout<<"Converted_value = "<<converted_value<<std::endl; //TODL
         }
-        value = line.substr(pos + 2);
+
         //check_value if it is negative send error, if too large same
 
 
