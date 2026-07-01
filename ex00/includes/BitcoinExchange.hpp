@@ -5,6 +5,13 @@
 #include <cstdlib>
 #include <iomanip> //precision stdout
 
+#define JANUARY   2
+#define APRIL     4
+#define JUNE      6
+#define SEPTEMBER 9
+#define NOVEMBER  11
+#define DATE_SEPARATOR '-'
+
 class BitcoinException : public std::runtime_error{
     public:
         explicit BitcoinException(const std::string& msg)

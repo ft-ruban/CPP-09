@@ -44,7 +44,6 @@ void BitcoinExchange::TransferFilesContents(){
 }
 
 void BitcoinExchange::FileOpener(){
-
     textfile_.open(path_txt_.c_str());
     if(!textfile_.is_open())
         throw std::invalid_argument("Failed to open file \'" + path_txt_ + "\'");
@@ -53,63 +52,63 @@ void BitcoinExchange::FileOpener(){
         throw std::invalid_argument("failed to open .csv file \'" + path_csv_ + "\'");
 }
 
-bool is_number(const std::string& s){
+//const iterator = only to read
+static bool isNumber(const std::string& s){
     std::string::const_iterator it = s.begin();
+
     while(it != s.end() && std::isdigit(*it)) ++it;
     return(!s.empty() && it == s.end());
 }
 
 
-static bool convert_in_int(std::string& buff, const std::string date, int& to_convert, int pos, int len){
-    buff = date.substr(pos, len);
-    if(!is_number(buff)){
-        return(0);
-    }
+static bool convertIntoInteger(const std::string& date, int& to_convert
+                                , const std::size_t pos, const std::size_t len){
+    std::string buff = date.substr(pos, len);
+
+    if(!isNumber(buff))
+        return(false);
     to_convert = std::atoi(buff.c_str());
-    return(1);     
+    if(to_convert == 0)
+        return(false);
+    return(true);
 }
 
-bool date_checker(std::string date){
+//formula to determine if leap year or not.
+static bool isLeapYear(int year){
+    return((year % 4 == 0) &&
+        ((year % 100 != 0) || (year % 400 == 0)));
+}
+
+static bool isDateFormatValid(const std::string date){
     int year = 0;
     int month = 0;
     int day = 0;
-    std::string buff;
 
-
-    if(date.c_str()[4] != '-' || date.c_str()[7] != '-'){
-        return(0);
-    }
-
-    if(!convert_in_int(buff, date, year, 0, 4 ||
-            !convert_in_int(buff, date, month, 5, 2) || 
-            !convert_in_int(buff, date,day,8,2)))
-                return(0);
-    std::cout<<"testttweatratawtawt : "<<date.c_str()[4]<<std::endl;
-    if(month < 1 || month > 12){
-        return(0);
-    }
+    if(date[4] != DATE_SEPARATOR || date[7] != DATE_SEPARATOR || date.length() != 10)
+        return(false);
+    if  (!convertIntoInteger(date, year, 0, 4) ||
+            !convertIntoInteger(date, month, 5, 2) || 
+            !convertIntoInteger(date,day, 8, 2))
+                return(false);
     switch(month){
-        case 4: case 6: case 9: case 11:
+        case APRIL: case JUNE: case SEPTEMBER: case NOVEMBER:
             if(day > 30)
-                return (0);
-        
+                return (false);
+            break;
+        case JANUARY:
+            if(day > 29 || (day == 29 && !isLeapYear(year))){
+                return (false);
+            }
+            break;
+        default:
+            if(day > 31 || month > 12){
+                return(false);
+            }
+            break;
     }
-
-    if((day < 1 || day > 31) || ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) || (month == 2 && day > 29)){
-        std::cout<< date<<" day is wrong"<<std::endl;
-        return(0);
-    }
-    if (day == 29 && month  == 2 &&
-            ((year % 4 != 0) ||  (year % 100 == 0 && year % 400 != 0))){
-        std::cout<< date<<" day is wrong special 2 case "<<std::endl;
-        return(0);
-    }
-
-
-
-    //std::cout<<"TODL: date is : "<<date<<std::endl;
-    return(1);
+    return(true);
 }
+
 //TODO try upperbound/lowerbound as it could be a solution to our problem when the date does not exist.
 void BitcoinExchange::Convertor(){
     //data_ hold .csv
@@ -120,7 +119,6 @@ void BitcoinExchange::Convertor(){
     std::string value;
 
     std::getline(textfile_, line);
-    // std::cout<<"line = "<< line<<std::endl;
     if(line != "date | value")
         throw BitcoinException::invalid_csv("Invalid .txt's first line"); //todo change error type here
     while(std::getline(textfile_, line)){
@@ -131,18 +129,17 @@ void BitcoinExchange::Convertor(){
         }
         else{
             date = line.substr(0, pos - 1);
-        if(!date_checker(date)){
-            std::cout<<"Date_checker failed date is : "<< date<<std::endl;
+        if(!isDateFormatValid(date)){
+            std::cout<<"Error: bad input => "<< date<<std::endl;
         }
-        //date_checker function check 4 first letters it's an error if 
-        // !yyyy-mm-dd
-        // if yyyy < 2009, mm > 12 || 00, dd need to find how to deal with it ASAP.
-
+        else{
+            std::cout<<"date_checker success!!! date : "<<date<<std::endl; //TODL
+        }
         value = line.substr(pos + 2);
         //check_value if it is negative send error, if too large same
 
 
-        std::cout<<std::endl<<"TEST DATE = "<<date<<" VALUE = "<<value<<std::endl;
+        // std::cout<<std::endl<<"TEST DATE = "<<date<<" VALUE = "<<value<<std::endl;
         
         //if it pass I need to find the closet date that was sent
 
