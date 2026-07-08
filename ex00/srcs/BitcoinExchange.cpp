@@ -78,7 +78,7 @@ static bool isLeapYear(int year){
     return((year % 4 == 0) &&
         ((year % 100 != 0) || (year % 400 == 0)));
 }
-
+//to check if the format is OK
 static bool isDateFormatValid(const std::string date){
     int year = 0;
     int month = 0;
@@ -134,19 +134,28 @@ void BitcoinExchange::Convertor(){
             std::cout<<"Error: bad input => "<< date<<std::endl;
         }
         else{
-            std::cout<<"date_checker success!!! date : "<<date<<std::endl; //TODL
+            std::cout<<"TODL: date_checker success!!! date : "<<date<<std::endl; //TODL
             value = line.substr(pos + 2);
-            //check if first char = '-'
-                //send appropriate error if - "Error: not a positive number."
-            //TEST: if you find a "." then it is a float, if float then cut in two parts and we will add them later?
-            //then check if isNumber()
-                //send appropriate error if <not_number> "Error: Not a num value" (may want to check if .?)
-            //then atof()
-                //if > than 1000 then "Error: too large a number." (note: check if size > 5)
-            std::cout<<"value = "<<value<<std::endl;
-            converted_value = std::atof(value.c_str());
-            std::cout<<"Converted_value = "<<converted_value<<std::endl; //TODL
-        }
+            std::cout<<"TODL: value = "<<value<<std::endl;
+            if(value[0] == '-'){
+                std::cout<<"Error: not a positive number."<<std::endl;
+            }
+            else if(!isNumber(value)){
+                std::cout<<"Error: Value is not a valid entry "<< value<< std::endl;
+            }
+            else{
+                //TEST: if you find a "." then it is a float, if float then cut in two parts and we will add them later?
+                //then check if isNumber()
+                    //send appropriate error if <not_number> "Error: Not a num value" (may want to check if .?)
+                //then atof()
+                    //if > than 1000 then "Error: too large a number." (note: check if size > 5)
+                std::cout<<"value = "<<value<<std::endl;
+                converted_value = std::atof(value.c_str());
+                std::cout<<"Converted_value = "<<converted_value<<std::endl; //TODL
+            }
+
+            }
+
 
         //check_value if it is negative send error, if too large same
 
