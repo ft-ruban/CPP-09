@@ -3,10 +3,13 @@
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
-#include <iomanip> //precision stdout
+#include <iomanip>
 #include <cmath>
 
-#define INVALID_VALUE -1
+#define INVALID_VALUE -42
+#define SEPARATOR_CHAR '|'
+#define MAX_VALUE_ALLOWED 1000
+#define LESSER_VALUE_ALLOWED 0
 #define JANUARY   2
 #define APRIL     4
 #define JUNE      6
@@ -26,23 +29,26 @@ class BitcoinException : public std::runtime_error{
         static BitcoinException invalid_csv(const std::string& details){
             return BitcoinException("FillDataError: " + details);
         }
+        static BitcoinException invalid_txt(const std::string& details){
+            return BitcoinException("ConvertorError: " + details);
+        }
 };
 
 class BitcoinExchange{
     public:
         BitcoinExchange();
-        BitcoinExchange(std::string provided_path_txt, std::string provided_path_csv);
-        BitcoinExchange(BitcoinExchange& other);
+        BitcoinExchange(const std::string provided_path_txt, const std::string provided_path_csv);
+        BitcoinExchange(const BitcoinExchange& other);
         BitcoinExchange& operator=(const BitcoinExchange& other);
         ~BitcoinExchange();
 
-        void TransferFilesContents();
-        void FileOpener();
-        void Convertor();
-        void exchangeRateFinder(std::string date, float converted_value);
+        void transferContentscsv();
+        void fileOpener();
+        void convertor();
+        void exchangeRateFinder(const std::string& date, const float& converted_value)const;
         
-        const std::string GetInput();
-        std::string GetData() const; 
+        const std::string getInput() const;
+        std::string getData() const; 
 
     private:
         std::map<std::string, float> data_;
@@ -51,5 +57,4 @@ class BitcoinExchange{
         std::string path_csv_;
         std::ifstream textfile_;
         std::ifstream csvfile_;
-
 };
