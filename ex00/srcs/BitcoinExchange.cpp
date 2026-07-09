@@ -39,6 +39,7 @@ void BitcoinExchange::TransferFilesContents(){
         pos = line.find(',');
         date = line.substr(0,pos);
         rate = line.substr(pos + 1);
+        //std::cout<<"TEST TODL rate is now egal to = "<<rate<<std::endl;
         data_.insert(std::make_pair(date, std::atof(rate.c_str())));
     }
 }
@@ -73,12 +74,11 @@ static bool convertIntoInteger(const std::string& date, int& to_convert
     return(true);
 }
 
-//formula to determine if leap year or not.
 static bool isLeapYear(int year){
     return((year % 4 == 0) &&
         ((year % 100 != 0) || (year % 400 == 0)));
 }
-//to check if the format is OK
+
 static bool isDateFormatValid(const std::string date){
     int year = 0;
     int month = 0;
@@ -109,80 +109,91 @@ static bool isDateFormatValid(const std::string date){
     return(true);
 }
 
-//TODO try upperbound/lowerbound as it could be a solution to our problem when the date does not exist.
+bool isZero(std::string s){
+    bool is_float = false;
+
+    for(int i = s.size() - 1; i >= 0; i--){
+        if(i == 0 && s[i] == '-')
+            break;
+        if(is_float == false && s[i] == '.')
+            is_float = true;
+        else if(s[i] != '0')
+            return(false);
+    }
+    return(true);
+}
+
+float valueConvertor(std::string value){
+    bool is_value_zero = false;
+    float return_value;
+
+    is_value_zero = isZero(value);
+    return_value = atof(value.c_str());
+    if((return_value == 0 && is_value_zero == false) || std::isnan(return_value)){
+        std::cout<<"Error: value \""<<value<<"\" is currently not a floating or integer value."<<std::endl;
+        return(INVALID_VALUE);
+    }
+    else if(return_value > 1000){
+        std::cout<<"Error:value \""<<value<<" \" too large a number"<<std::endl; //TODO rm value when product is finished.
+        return(INVALID_VALUE);
+    }
+    else if(return_value < 0){
+        std::cout<<"Error: not a positive number."<<std::endl;
+        return(INVALID_VALUE);
+    }
+    return(return_value);
+}
+
+void BitcoinExchange::exchangeRateFinder(std::string date, float converted_value){
+    std::map<std::string, float>::iterator it;
+
+    it = data_.lower_bound(date);
+    if(it == data_.end() || it->first > date)
+        it--;
+    std::cout<<date<< " => "<<converted_value<< " = "<< it->second * converted_value<<std::endl;
+}
+
 void BitcoinExchange::Convertor(){
-    //data_ hold .csv
-    //input_
     std::string line = input_.str();
     std::size_t pos;
     std::string date;
-    std::string value;
-    int converted_value;
+    float converted_value;
 
     std::getline(textfile_, line);
     if(line != "date | value")
         throw BitcoinException::invalid_csv("Invalid .txt's first line"); //todo change error type here
     while(std::getline(textfile_, line)){
-
         pos = line.find('|');
         if(pos == std::string::npos){
             std::cout<<"Error: bad input => "<<line<<std::endl;
         }
         else{
-            date = line.substr(0, pos - 1);
+            date = line.substr(0, pos - 1); //probably a way to put it in isDateFormatValid
         if(!isDateFormatValid(date)){
             std::cout<<"Error: bad input => "<< date<<std::endl;
         }
         else{
-            std::cout<<"TODL: date_checker success!!! date : "<<date<<std::endl; //TODL
-            value = line.substr(pos + 2);
-            std::cout<<"TODL: value = "<<value<<std::endl;
-            if(value[0] == '-'){
-                std::cout<<"Error: not a positive number."<<std::endl;
-            }
-            else if(!isNumber(value)){
-                std::cout<<"Error: Value is not a valid entry "<< value<< std::endl;
-            }
-            else{
-                //TEST: if you find a "." then it is a float, if float then cut in two parts and we will add them later?
-                //then check if isNumber()
-                    //send appropriate error if <not_number> "Error: Not a num value" (may want to check if .?)
-                //then atof()
-                    //if > than 1000 then "Error: too large a number." (note: check if size > 5)
-                std::cout<<"value = "<<value<<std::endl;
-                converted_value = std::atof(value.c_str());
-                std::cout<<"Converted_value = "<<converted_value<<std::endl; //TODL
-            }
-
-            }
-
-
-        //check_value if it is negative send error, if too large same
-
-
-        // std::cout<<std::endl<<"TEST DATE = "<<date<<" VALUE = "<<value<<std::endl;
-        
-        //if it pass I need to find the closet date that was sent
-
-        //once date is found multiply value by associated exchange rate
+            converted_value = valueConvertor(line.substr(pos + 2));
+            if(converted_value != -1){
+                exchangeRateFinder(date,converted_value);
+           }
         }
 
-    }  
+        }
+    }
+}  
 
-
-}
 const std::string BitcoinExchange::GetInput(){
     return(input_.str());
 }
 
-//still have to test it.
 std::string BitcoinExchange::GetData() const{
     std::ostringstream foo;
     std::string return_value;
 
-for(std::map<std::string, float>::const_iterator it = data_.begin();
-    it != data_.end(); ++it)
-        foo << "date: "<< it->first << " rate: "<<std::fixed<< std::setprecision(2)<<it->second<<std::endl;
+    for(std::map<std::string, float>::const_iterator it = data_.begin();
+        it != data_.end(); ++it)
+            foo << "date: "<< it->first << " rate: "<<std::fixed<< std::setprecision(2)<<it->second<<std::endl;
     return_value = foo.str();
     return(return_value);
 }

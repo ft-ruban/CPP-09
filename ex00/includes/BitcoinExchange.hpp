@@ -4,7 +4,9 @@
 #include <fstream>
 #include <cstdlib>
 #include <iomanip> //precision stdout
+#include <cmath>
 
+#define INVALID_VALUE -1
 #define JANUARY   2
 #define APRIL     4
 #define JUNE      6
@@ -37,6 +39,7 @@ class BitcoinExchange{
         void TransferFilesContents();
         void FileOpener();
         void Convertor();
+        void exchangeRateFinder(std::string date, float converted_value);
         
         const std::string GetInput();
         std::string GetData() const; 
