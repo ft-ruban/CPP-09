@@ -2,7 +2,7 @@
 .PHONY:	all init clean fclean re test FORCE
 
 include config.mk
-include rpn.mk
+include RPN.mk
 
 OBJS := $(patsubst $(SRCSDIR)%.cpp, $(OBJS_DIR)%.o, $(SRCS))
 DEPS := $(OBJS:.o=.d)
@@ -23,7 +23,7 @@ $(NAME): Makefile $(OBJS) | $(EXEC_DIR)
 	echo "$(RESET)"
 
 
-$(OBJS_DIR)%.o: $(SRCSDIR)%.cpp Makefile config.mk rpn.mk | $(OBJS_DIR)
+$(OBJS_DIR)%.o: $(SRCSDIR)%.cpp Makefile config.mk RPN.mk | $(OBJS_DIR)
 	mkdir -p $(dir $@)
 	echo "$(PURPLE)Compiling $<...$(RESET)"
 	$(CXX) $(CXXFLAGS) -c -o $@ $<	
