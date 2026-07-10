@@ -1,18 +1,36 @@
 #include <iostream>
 
-/*
-$> ./RPN "8 9 * 9 - 9 - 9 - 4 - 1 +"
-42
-$> ./RPN "7 7 * 7 -"
-42
-$> ./RPN "1 2 * 2 / 2 * 2 4 - +"
-0
-$> ./RPN "(1 + 1)"
-Erro*/
+#include "../includes/RPN.hpp"
+//from ./bin/RPN "7 7 * 7 - c c a o"
+//to 7 7 * 7 - c c a o%
 
-int main(){//TODO take argument that would be an inverted Polish Math expression
-    std::cout<<"Hello World :>"<<std::endl;
-    //TODO need to check if argument is present
+int main(int argc, char* argv[]){
+    if (argc < 2){
+        std::cerr<<"No arguments provided."<<std::endl;
+        return(1);
+    }
+    if(argc > 2){
+        std::cerr<<"too much arguments provided."<<std::endl;
+        return(1);
+    }
+
+    RPN foo(argv[1]);
+    std::cout<<"Test"<<std::endl; //TODL
+    foo.getRPN();
+
+    try{
+        // function transfer argv into private string?
+        foo.calculusTreatment();
+        // print result?
+    }   catch(const std::exception & e){
+            std::cout<<"Error: "<<e.what()<<std::endl;
+            return(2);
+    }
+    //step 1 put in string so the treatment would be easier in theory?
+    //step 2 make sure the 2 first char are numbers then third is an allowed token
+    
+    //argv[1] = "5 6 + 2 + 5 - 5"
+    //allowed tokens are "+ - / *"
 
     //TOASK imo I do not need to parse what the user send me, but I wanna be sure firsthand
 
