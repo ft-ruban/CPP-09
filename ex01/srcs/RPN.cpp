@@ -1,43 +1,42 @@
 #include "../includes/RPN.hpp"
-#include <stdexcept> //TODO mv to .hpp
-#include <limits.h> //same
 
-RPN::RPN(){
-    size_of_input_ = 0;
-    size_of_stock_ = 0;
-}
+RPN::RPN() : size_of_input_(0), size_of_stock_(0){}
 
-RPN::RPN(char argv[]){
+RPN::RPN(const char argv[]){
     int i = 0;
-    while(argv[i] != '\0'){
-        std::cout<<"i = "<<i<<std::endl;
+    size_of_stock_ = 0;
+
+    while(argv[i] != '\0')
         i++;
-    }
     size_of_input_ = i;
     while(i >= 0){
-        std::cout<<"i = "<<i<<std::endl;
         input_.push(argv[i]);
         i--;
     }
-    size_of_stock_ = 0;
+ 
 }
 
-RPN::RPN(const RPN& other){
-    (void) other;
-}
+RPN::RPN(const RPN& other) : input_(other.input_),
+                             size_of_input_(other.size_of_input_),
+                             stock_(other.stock_),
+                             size_of_stock_(other.size_of_stock_){}
 
 RPN& RPN::operator= (const RPN& other){
-    (void) other;
+    if(this != &other){
+        this->input_ = other.input_;
+        this->size_of_input_ = other.size_of_input_;
+        this->stock_ = other.stock_;
+        this->size_of_stock_ = other.size_of_stock_;
+    }
     return(*this);
 }
 
-RPN::~RPN(){
+RPN::~RPN(){}
 
-}
-
-void RPN::getRPN(){
+void RPN::getInput() const{
     std::stack<char> buff = input_;
     int size_buff = size_of_input_;
+
     while(size_buff != 0){
         std::cout<<buff.top();
         buff.pop();
@@ -46,38 +45,39 @@ void RPN::getRPN(){
     std::cout<<std::endl;
 }
 
-void RPN::getSizeOfInput(){
+void RPN::getSizeOfInput() const{
     std::cout<<size_of_input_<<std::endl;
 }
 
+void RPN::getStock() const{
+    std::stack<int> buff = stock_;
+    int size_buff = size_of_stock_;
 
+    while(size_buff != 0){
+        std::cout<<buff.top();
+        buff.pop();
+        size_buff--;
+    }
+    std::cout<<std::endl;
+}
 
-static bool isSpace(char c){
+void RPN::getSizeOfStock() const{
+    std::cout<<size_of_stock_<<std::endl;
+}
+
+static bool isSpace(const char& c){
     return(c == ' ');
 }
 
-static bool isNum(char c){
-    //std::cout<<"debug isNum c = "<<c<<" = "<<(c>='0' && c <= '9')<<std::endl;
+static bool isNum(const char& c){
     return(c >= '0' && c <= '9');
 }
-//+ - / *
-static bool isValidToken(char c){
+
+static bool isValidToken(const char& c){
     return(c == '+' || c == '-' || c == '/' || c == '*');
 }
 
-static void getToNextChar(std::stack<char>& input_, int& size_of_input){
-    input_.pop();
-    size_of_input--;
-    if(size_of_input != 0){
-        if(!isSpace(input_.top()))
-            throw std::invalid_argument("TODL !isspace gettonextchar");
-        input_.pop();
-        size_of_input--;
-    }
-
-}
-
-static void overflowDetector(int operator_case, int a, int x){
+static void overflowDetector(const int& operator_case, const int& a, const int& x){
     switch(operator_case){
         case MULT_OVERF_CASE:
             if ((a == -1 && x == INT_MIN )  || 
@@ -101,70 +101,79 @@ static void overflowDetector(int operator_case, int a, int x){
     }
 }
 
-static void expression(std::stack<int>& buff_stack, char active_token, int& size_of_stack){
-    int variable_x = 0;
-    int variable_y = 0;
-    
-    variable_y  = buff_stack.top();
-    buff_stack.pop();
-    size_of_stack--;
-    variable_x = buff_stack.top();
-    buff_stack.pop();
-    size_of_stack--;
-    std::cout<<"active_token = "<<active_token<<std::endl; //TODL
-
-    std::cout<<"we are doing "<<variable_x<<" "<<active_token<<" "<<variable_y<<std::endl;
-    switch(active_token){
-            case '+':
-                overflowDetector(ADDITION_OVERF_CASE, variable_x, variable_y);
-                buff_stack.push(variable_x + variable_y);
-                size_of_stack++;
-                break;
-            case '-':
-                overflowDetector(SUBTRACTION_OVERF_CASE, variable_x, variable_y);
-                buff_stack.push(variable_x - variable_y);
-                size_of_stack++;
-                break;
-            case '/':
-                overflowDetector(DIVISION_OVERF_CASE, variable_x, variable_y);
-                if(variable_y == 0)
-                    throw std::invalid_argument("");
-                size_of_stack++;
-                buff_stack.push(variable_x / variable_y);
-                break;
-            case '*':
-                overflowDetector(MULT_OVERF_CASE, variable_x, variable_y);
-                buff_stack.push(variable_x * variable_y);
-                size_of_stack++;
-                break;
-            default:
-                throw std::invalid_argument("");
-        }   
-}
-
 void RPN::calculusTreatment(){
-    char buff_one;
-
     while(size_of_input_ != 0){
-        buff_one = input_.top();
-        
-        getToNextChar(input_, size_of_input_);
-        if(isNum(buff_one)){
-            stock_.push(buff_one - '0');
-            size_of_stock_++;
-        }
-        else if(isValidToken(buff_one)){
+        char to_treat = topPopAndResizeInput();
+        if(isNum(to_treat))
+            pushAndResizeStock(to_treat - '0');
+        else if(isValidToken(to_treat)){
             if(size_of_stock_ < 2)
                 throw std::invalid_argument("");
             else
-                expression(stock_, buff_one, size_of_stock_);
+                processExpression(to_treat);
         }
         else
             throw std::invalid_argument("");
     }
+}
+
+void RPN::printResult()const{
     if(size_of_stock_ != 1){
         throw std::invalid_argument("");
     }
-    int result = stock_.top();
-    std::cout<<"result is = "<<result<<std::endl;
+    std::cout<<stock_.top()<<std::endl;
+}
+
+void RPN::processExpression(const char& used_operator){
+    int operand_y = topPopAndResizeStock();
+    int operand_x = topPopAndResizeStock();
+
+    switch(used_operator){
+            case '+':
+                overflowDetector(ADDITION_OVERF_CASE, operand_x, operand_y);
+                pushAndResizeStock(operand_x + operand_y);
+                break;
+            case '-':
+                overflowDetector(SUBTRACTION_OVERF_CASE, operand_x, operand_y);
+                pushAndResizeStock(operand_x - operand_y);
+                break;
+            case '/':
+                overflowDetector(DIVISION_OVERF_CASE, operand_x, operand_y);
+                if(operand_y == 0)
+                    throw std::invalid_argument("");
+                pushAndResizeStock(operand_x / operand_y);
+                break;
+            case '*':
+                overflowDetector(MULT_OVERF_CASE, operand_x, operand_y);
+                pushAndResizeStock(operand_x * operand_y);
+                break;
+            default:
+                throw std::invalid_argument("");
+        }
+}
+
+void RPN::pushAndResizeStock(int value_to_push){
+    stock_.push(value_to_push);
+    size_of_stock_++;
+}
+
+char RPN::topPopAndResizeInput(){
+    char return_value = input_.top();
+    input_.pop();
+    size_of_input_--;
+    if(size_of_input_ != 0){
+        if(!isSpace(input_.top()))
+            throw std::invalid_argument("");
+        input_.pop();
+        size_of_input_--;
+    }
+    return(return_value);
+}
+
+int RPN::topPopAndResizeStock(){
+    int return_value = stock_.top();
+
+    stock_.pop();
+    size_of_stock_--;
+    return(return_value);
 }
