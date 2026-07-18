@@ -8,6 +8,6 @@ class PmergeMe{
         PmergeMe& operator=(const PmergeMe& other);
         ~PmergeMe();
     private:
-        std::vector<int> foo_;
-        std::list<int> bar_;
+        std::vector<int> vec_;
+        std::list<int> list_;
 };
