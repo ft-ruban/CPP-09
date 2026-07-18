@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <sys/time.h>
 
 #include "../includes/PmergeMe.hpp"
 
@@ -49,6 +50,15 @@ bool parse_arguments(int argc, char** argv, std::vector<int>& result){
     return (true);
 }
 
+template <typename Container>
+void print_container(const std::string& label, const Container& c)
+{
+    std::cout << label;
+    for (typename Container::const_iterator it = c.begin(); it != c.end(); ++it)
+        std::cout << *it << " ";
+    std::cout << std::endl;
+}
+
 int main(int argc, char* argv[]){
     std::vector<int> values;
 
@@ -56,22 +66,28 @@ int main(int argc, char* argv[]){
         return (1);
     }
 
-    std::cout<< "Parsed values: ";
-    for(std::size_t i = 0; i < values.size(); ++i)
-        std::cout << values[i] << " ";
-    std::cout << std::endl;
+    PmergeMe pmerge(values);
+    print_container("Before: ", pmerge.getVector());
 
-    //TODO parse args
 
-    //TODO validate that we are dealing with 
-    //   positive int only, no copy number and the overflow
+    struct timeval start_vec, end_vec;
+    gettimeofday(&start_vec, NULL);
+    //pmerge.sortVector(); TODO implement algo
+    gettimeofday(&end_vec, NULL);
+    double time_vec = (end_vec.tv_sec - start_vec.tv_sec) * 1000000.0 + (end_vec.tv_usec - start_vec.tv_usec);
+   
+    struct timeval start_list, end_list;
+    gettimeofday(&start_list, NULL);
+    //pmerge.sortList(); TODO implement algo
+    gettimeofday(&end_list, NULL);
+    double time_list = (end_list.tv_sec - start_list.tv_sec) * 1000000.0 + (end_list.tv_usec - start_list.tv_usec);
     
-    //TODO fill our std:vector<int> and a std::list<int> with the same verified values
+    print_container("After: ", pmerge.getVector());
 
-    //TODO show the before:...
+    std::cout << "Time to process a range of " << values.size()
+              << " elements with std::vector : " << time_vec << " us" << std::endl;
+    std::cout << "Time to process a rage of " << values.size()
+              << " elements with std::list : " << time_list << " us" << std::endl;
 
-    //TODO launch the sorting part on both containers, I shall use std::chrono for that end
-
-    //TODO display "After..." + the time for both
     return(0);
 }
