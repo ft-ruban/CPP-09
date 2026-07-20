@@ -1,3 +1,6 @@
+#ifndef PMERGEME_HPP
+#define PMERGEME_HPP
+
 #include <vector>
 #include <list>
 
@@ -12,7 +15,15 @@ class PmergeMe{
         const std::vector<int>& getVector()const;
         const std::list<int>& getList()const;
 
+        void sortVector();
+        void sortList();
+
+        template <typename Container>
+        void fordJohnsonSort(Container& c, int pair_level);
+
     private:
         std::vector<int> vec_;
         std::list<int> list_;
 };
+
+#endif
