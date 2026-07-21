@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <errno.h>
 #include <sys/time.h>
 
 #include "../includes/PmergeMe.hpp"
@@ -72,7 +73,7 @@ int main(int argc, char* argv[]){
 
     struct timeval start_vec, end_vec;
     gettimeofday(&start_vec, NULL);
-    //pmerge.sortVector(); TODO implement algo
+    pmerge.sortVector();
     gettimeofday(&end_vec, NULL);
     double time_vec = (end_vec.tv_sec - start_vec.tv_sec) * 1000000.0 + (end_vec.tv_usec - start_vec.tv_usec);
    

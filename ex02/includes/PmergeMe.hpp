@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <iostream>
 
 class PmergeMe{
     public:
@@ -19,7 +20,7 @@ class PmergeMe{
         void sortList();
 
         template <typename Container>
-        void fordJohnsonSort(Container& c, int pair_level);
+        void fordJohnsonSort(Container& c, int pair_depth);
 
     private:
         std::vector<int> vec_;

@@ -42,27 +42,18 @@ void PmergeMe::sortList()
     fordJohnsonSort(list_, 1);
 }
 
-
+// 11 2 17 0 16 8 6 15 10 3 21 1 18 9 14 19 12 5 4 20 13 7
 template <typename Container>
-void PmergeMe::fordJohnsonSort(Container& c, int pair_level){
-    typedef typename Container::iterator iterator;
-
-    int pair_units_nbr = c.size() / pair_level;
-    if (pair_units_nbr < 2)
-        return;
-
-    bool is_odd = pair_units_nbr % 2 == 1;
-
-    iterator start = c.begin();
-    iterator last = next(c.begin(), pair_level * (pair_units_nbr));
-    iterator end = next(last, -(is_odd * pair_level));
-
-    int jump = 2 * pair_level;
-    for(iterator it = start; it != end; std::advance(it, jump)){
-        iterator this_pair = next(it, pair_level - 1);
-        iterator next_pair = next(it, pair_level * 2 - 1);
-        //if()
-    }
-    fordJohnsonSort(c, pair_level * 2);
+void PmergeMe::fordJohnsonSort(Container& c, int pair_depth){
+    // typedef typename Container::iterator Iterator;
     
+    int num_pair = c.size() / pair_depth;
+    std::cout<<"pair_un_nbr = " << num_pair <<std::endl; //TODL
+    if(num_pair < 2)
+        return;
+    bool is_it_odd = num_pair % 2 == 1;
+    // 2 * 1    2 * 2   2 * 4  2 * 8
+
+
+    fordJohnsonSort(c, pair_depth * 2);
 }
